@@ -15,10 +15,10 @@
  */
 
 import {
+    AutofixGoal,
+    onAnyPush,
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
-    onAnyPush,
-    AutofixGoal,
 } from "@atomist/sdm";
 import {
     createSoftwareDeliveryMachine,
