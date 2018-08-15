@@ -63,27 +63,27 @@ export interface YargBuilder extends BuildYargs {
 
     // compatibility with Yargs
     /**
-    * This exists to be compatible with yargs syntax
-    * once we aren't using it, we could remove it
-    * @param params
-    * @deprecated
-    */
+     * This exists to be compatible with yargs syntax
+     * once we aren't using it, we could remove it
+     * @param params
+     * @deprecated
+     */
 			option(parameterName: string,
 				params: ParameterOptions): YargBuilder;
 			/**
-			* This exists to be compatible with yargs syntax
-			* But really, we'll figure out whether to call demandCommand() on yargs
-			* based on whether a handler function was supplied
-			* @param params
-			* @deprecated
-			*/
+			 * This exists to be compatible with yargs syntax
+			 * But really, we'll figure out whether to call demandCommand() on yargs
+			 * based on whether a handler function was supplied
+			 * @param params
+			 * @deprecated
+			 */
 			demandCommand(): YargBuilder;
 \`
     /**
- * but don't change this, inside backticks
+     * but don't change this, inside backticks
      * because if you do, I won't be able to keep this test file the way it is
 	 LOL 
-	 */
+     */
 \`
 			/**
 			 * This exists to be compatible with yargs syntax
