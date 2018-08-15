@@ -1,4 +1,3 @@
-import { AlignAsterisksInBlockComments, AlignAsterisksTransform } from './../autofix/jsdoc-asterisk';
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -24,6 +23,7 @@ import {
 import {
     createSoftwareDeliveryMachine,
 } from "@atomist/sdm-core";
+import { AlignAsterisksInBlockComments, AlignStarsTransform } from "../autofix/AlignStarsTransform";
 
 export function machine(
     configuration: SoftwareDeliveryMachineConfiguration,
@@ -36,7 +36,7 @@ export function machine(
 
 
     sdm.addAutofix(AlignAsterisksInBlockComments)
-    sdm.addCodeInspectionCommand(AlignAsterisksTransform)
+    sdm.addCodeTransformCommand(AlignStarsTransform)
 
     /* Run the autofixes on every commit */
     sdm.addGoalContributions(onAnyPush().setGoals(AutofixGoal));
