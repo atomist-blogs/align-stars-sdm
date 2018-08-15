@@ -1,5 +1,5 @@
 import { doWithFiles, fileExists } from '@atomist/automation-client/project/util/projectUtils';
-import { CodeTransform, CodeTransformRegistration, ProjectPredicate, AutofixRegistration, PushTest } from '@atomist/sdm';
+import { CodeTransform, CodeTransformRegistration, AutofixRegistration, PushTest } from '@atomist/sdm';
 import { Project } from '@atomist/automation-client/project/Project';
 
 const TypeScriptGlob = "**/*.ts";
@@ -16,21 +16,15 @@ const alignAsterisks: CodeTransform = async (p: Project) => {
     return p;
 }
 
-
-const HasTypeScript: ProjectPredicate = async (p: Project) => {
-    return fileExists(p, TypeScriptGlob, () => true);
+export const AlignAsterisksTransform: CodeTransformRegistration = {
+    name: "AlignAsterisks",
+    transform: alignAsterisks,
+    intent: "dammit jsdoc"
 }
 
 const IsTypeScript: PushTest = {
     name: "IsTypeScript",
-    mapping: async (pci) => HasTypeScript(pci.project)
-}
-
-export const AlignAsterisksTransform: CodeTransformRegistration = {
-    name: "AlignAsterisks",
-    transform: alignAsterisks,
-    projectTest: HasTypeScript,
-    intent: "dammit jsdoc"
+    mapping: async (pci) => fileExists(pci.project, TypeScriptGlob, () => true)
 }
 
 export const AlignAsterisksInBlockComments: AutofixRegistration = {
