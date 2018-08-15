@@ -1,3 +1,4 @@
+import { AlignAsterisksInBlockComments, AlignAsterisksTransform } from './../autofix/jsdoc-asterisk';
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -15,10 +16,10 @@
  */
 
 import {
-    AutofixGoal,
-    onAnyPush,
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
+    onAnyPush,
+    AutofixGoal,
 } from "@atomist/sdm";
 import {
     createSoftwareDeliveryMachine,
@@ -32,6 +33,13 @@ export function machine(
         name: "Minimal Transform + Autofix Software Delivery Machine",
         configuration,
     });
+
+
+    sdm.addAutofix(AlignAsterisksInBlockComments)
+    sdm.addCodeInspectionCommand(AlignAsterisksTransform)
+
+    /* Run the autofixes on every commit */
+    sdm.addGoalContributions(onAnyPush().setGoals(AutofixGoal));
 
     return sdm;
 }
