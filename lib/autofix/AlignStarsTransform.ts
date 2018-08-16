@@ -36,7 +36,7 @@ const alignAsterisksInProject: CodeTransform = async (p: Project) => {
 export const AlignStarsTransform: CodeTransformRegistration = {
     name: "AlignAsterisks",
     transform: alignAsterisksInProject,
-    intent: "dammit jsdoc",
+    intent: "align the stars",
 }
 
 const IsTypeScript: PushTest = {
