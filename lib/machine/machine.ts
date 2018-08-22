@@ -23,7 +23,11 @@ import {
 import {
     createSoftwareDeliveryMachine,
 } from "@atomist/sdm-core";
-import { AlignAsterisksInBlockComments, AlignStarsTransform } from "../autofix/AlignStarsTransform";
+import {
+    // AlignAsterisksInBlockComments,
+    AlignStarsTransform
+} from "../autofix/AlignStarsTransform";
+import { AlignStarsInspection } from "../autofix/AlignStarsInspection";
 
 export function machine(
     configuration: SoftwareDeliveryMachineConfiguration,
@@ -35,8 +39,9 @@ export function machine(
     });
 
 
-    sdm.addAutofix(AlignAsterisksInBlockComments)
+    //  sdm.addAutofix(AlignAsterisksInBlockComments)
     sdm.addCodeTransformCommand(AlignStarsTransform)
+    sdm.addCodeInspectionCommand(AlignStarsInspection);
 
     /* Run the autofixes on every commit */
     sdm.addGoalContributions(onAnyPush().setGoals(AutofixGoal));

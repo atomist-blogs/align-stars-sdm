@@ -15,7 +15,7 @@
  */
 
 import { doWithFiles, fileExists } from '@atomist/automation-client/project/util/projectUtils';
-import { CodeTransform, CodeTransformRegistration, AutofixRegistration, PushTest } from '@atomist/sdm';
+import { CodeTransform, CodeTransformRegistration, AutofixRegistration, PushTest, } from '@atomist/sdm';
 import { Project } from '@atomist/automation-client/project/Project';
 import { hasUnalignedAsterisks, alignStars } from './alignStars';
 
@@ -49,3 +49,4 @@ export const AlignAsterisksInBlockComments: AutofixRegistration = {
     transform: alignAsterisksInProject,
     pushTest: IsTypeScript,
 }
+
