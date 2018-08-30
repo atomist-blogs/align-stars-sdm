@@ -19,19 +19,14 @@ import { CodeTransform, CodeTransformRegistration, AutofixRegistration, PushTest
 import { Project } from '@atomist/automation-client/project/Project';
 import { hasUnalignedAsterisks, alignStars } from './alignStars';
 
-const TypeScriptGlob = "**/*.ts";
 
-const alignAsterisksInProject: CodeTransform = async (p: Project) => {
-
-    await doWithFiles(p, TypeScriptGlob, async f => {
+const alignAsterisksInProject: CodeTransform = (project: Project) =>
+    doWithFiles(project, "**/*.ts", async f => {
         const content = await f.getContent();
         if (hasUnalignedAsterisks(content)) {
             await f.setContent(alignStars(content));
         }
     });
-
-    return p;
-}
 
 export const AlignStarsTransform: CodeTransformRegistration = {
     name: "AlignAsterisks",
@@ -41,7 +36,7 @@ export const AlignStarsTransform: CodeTransformRegistration = {
 
 const IsTypeScript: PushTest = {
     name: "IsTypeScript",
-    mapping: async (pci) => fileExists(pci.project, TypeScriptGlob, () => true),
+    mapping: async (pci) => fileExists(pci.project, "**/*.ts", () => true),
 }
 
 export const AlignAsterisksInBlockComments: AutofixRegistration = {
