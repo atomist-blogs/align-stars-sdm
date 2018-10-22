@@ -4,7 +4,13 @@
 
 # align-stars-sdm
 
-A simple Autofix to align asterisks in block comments.
+A simple Autofix to align asterisks in block comments using
+[Atomist][atomist].  See the blog post [Align the Stars
+(programmatically)][stars-blog] by [@jessitron][jess-twitter] for an
+explanation of what this repository is all about.
+
+[stars-blog]: https://the-composition.com/align-the-stars-programmatically-35dc5625f97d (The Composition - Align the Stars (programmatically)
+[jess-twitter]: https://twitter.com/jessitron (Twitter - @jessitron)
 
 Software delivery machines enable you to control your delivery process
 in code.  Think of it as an API for your software delivery.  See the
