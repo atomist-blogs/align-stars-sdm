@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 // a block comment begins with a line starting with (whitespace and) /*
 // it ends with a line containing */
 export const BeginBlockComment = /^(\s*)\/\*/;
@@ -50,7 +48,7 @@ function alignBlockComment(blockCommentLines: BlockCommentLines): BlockCommentLi
  * and what if anything to contribute to the final output.
  * Such functional programming. Very referentially transparent.
  */
-type LineIteratee<Emission> = (line: string) => { proceed: LineIteratee<Emission>, emit?: Emission[] }
+type LineIteratee<Emission> = (line: string) => { proceed: LineIteratee<Emission>, emit?: Emission[] };
 
 /**
  * I had fun implementing this iteratee-style. This one looks for the beginning of a block comment.
@@ -58,13 +56,13 @@ type LineIteratee<Emission> = (line: string) => { proceed: LineIteratee<Emission
  * Otherwise it passes the line through.
  * @param line one line of JS or TS.
  */
-const passThroughUntilBlockComment: LineIteratee<string> = (line) => {
+const passThroughUntilBlockComment: LineIteratee<string> = line => {
     if (BeginBlockComment.test(line) && !EndBlockComment.test(line)) {
         return { proceed: processBlockComment([line]) };
     } else {
         return { proceed: passThroughUntilBlockComment, emit: [line] };
     }
-}
+};
 
 /**
  * This one receives lines while we're in a block content. It accumulates them
@@ -73,14 +71,14 @@ const passThroughUntilBlockComment: LineIteratee<string> = (line) => {
  * @param before the lines in the block comment so far.
  */
 function processBlockComment(before: string[]): LineIteratee<string> {
-    return (line) => {
+    return line => {
         const soFar = [...before, line];
         if (EndBlockComment.test(line)) {
             return { proceed: passThroughUntilBlockComment, emit: alignBlockComment(soFar) };
         } else {
             return { proceed: processBlockComment(soFar) };
         }
-    }
+    };
 }
 
 type BlockCommentLines = string[];
@@ -112,13 +110,13 @@ export function asterisksAreAligned(commentLines: BlockCommentLines): boolean {
  * Eat the lines (don't emit them) while outside.
  * @param line outside of a block comment
  */
-const lookForBlockComment: LineIteratee<BlockCommentLines> = (line) => {
+const lookForBlockComment: LineIteratee<BlockCommentLines> = line => {
     if (BeginBlockComment.test(line) && !EndBlockComment.test(line)) {
         return { proceed: emitBlockCommentAtEnd([line]) };
     } else {
         return { proceed: lookForBlockComment };
     }
-}
+};
 
 /**
  * Read lines inside the block comment until it ends. When it ends, emit them all in one chunk
@@ -126,14 +124,14 @@ const lookForBlockComment: LineIteratee<BlockCommentLines> = (line) => {
  * @param before accumulated lines
  */
 function emitBlockCommentAtEnd(before: string[]): LineIteratee<BlockCommentLines> {
-    return (line) => {
+    return line => {
         const soFar = [...before, line];
         if (EndBlockComment.test(line)) {
             return { proceed: lookForBlockComment, emit: [soFar] };
         } else {
             return { proceed: emitBlockCommentAtEnd(soFar) };
         }
-    }
+    };
 }
 
 /**
@@ -142,17 +140,17 @@ function emitBlockCommentAtEnd(before: string[]): LineIteratee<BlockCommentLines
  */
 function countBackticks(line: string): number {
     // but not escaped backticks.
-    return line.replace("\\'", "").split("`").length - 1
+    return line.replace("\\'", "").split("`").length - 1;
 }
 
 /**
  * This wraps a LineIteratee, and it eats lines that include backtick-delimited strings.
  * Unfortunately I think it will also eat lines that are in comments and have backticks. This is not easy.
  * But it's sufficient for what I need to do, so we're good!
- * 
+ *
  */
 function eatBackticks<T>(inner: LineIteratee<T>): LineIteratee<T> {
-    return (line) => {
+    return line => {
         if (countBackticks(line) % 2 === 1) { // we have an odd number; enter backtickland
             return { proceed: eatUntilClosingBacktick(inner) };
         } else {
@@ -160,64 +158,64 @@ function eatBackticks<T>(inner: LineIteratee<T>): LineIteratee<T> {
             const innerResult = inner(line);
             return {
                 emit: innerResult.emit,
-                proceed: eatBackticks(innerResult.proceed)
+                proceed: eatBackticks(innerResult.proceed),
             };
         }
-    }
+    };
 }
 function eatUntilClosingBacktick<T>(inner: LineIteratee<T>): LineIteratee<T> {
-    return (line) => {
+    return line => {
         if (countBackticks(line) % 2 === 1) { // we have an odd number; exit backtickland
             return { proceed: eatBackticks(inner) };
         } else {
             // keep eating. the inner one does not advance
             return { proceed: eatUntilClosingBacktick(inner) };
         }
-    }
+    };
 }
 
 /* Any line that starts or ends a backtick string is also passed through */
 function passThroughBackticks(inner: LineIteratee<string>): LineIteratee<string> {
-    return (line) => {
+    return line => {
         if (countBackticks(line) % 2 === 1) { // we have an odd number; enter backtickland
             return {
                 proceed: passThroughUntilClosingBacktick(inner),
-                emit: [line]
+                emit: [line],
             };
         } else {
             // just wrap the iteratee result; it gets to proceed
             const innerResult = inner(line);
             return {
                 emit: innerResult.emit,
-                proceed: passThroughBackticks(innerResult.proceed)
+                proceed: passThroughBackticks(innerResult.proceed),
             };
         }
-    }
+    };
 }
 function passThroughUntilClosingBacktick<T>(inner: LineIteratee<string>): LineIteratee<string> {
-    return (line) => {
+    return line => {
         if (countBackticks(line) % 2 === 1) { // we have an odd number; exit backtickland after this line
             return {
                 proceed: passThroughBackticks(inner),
-                emit: [line]
+                emit: [line],
             };
         } else {
             // the inner one does not advance
             return {
                 proceed: passThroughUntilClosingBacktick(inner),
-                emit: [line]
+                emit: [line],
             };
         }
-    }
+    };
 }
 
 /**
  * Plumbing for the iteratees.
- * 
+ *
  * I saw that lodash had "iteratee" as the argument to map and I was all excited
  * but NO it uses that word completely differently
  * This way is cooler.
- * 
+ *
  * @param start LineIteratee that will process the first line
  * @param lines all the lines to process
  */
@@ -231,6 +229,6 @@ function pipeThroughIteratee<Emission>(start: LineIteratee<Emission>, lines: str
         if (emit !== undefined) {
             emit.forEach(e => emissions.push(e));
         }
-    })
+    });
     return emissions;
 }

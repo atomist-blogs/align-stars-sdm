@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import { doWithFiles, fileExists } from '@atomist/automation-client/project/util/projectUtils';
-import { CodeTransform, CodeTransformRegistration, AutofixRegistration, PushTest } from '@atomist/sdm';
-import { Project } from '@atomist/automation-client/project/Project';
-import { hasUnalignedAsterisks, alignStars } from './alignStars';
-
+import { Project, projectUtils } from "@atomist/automation-client";
+import { AutofixRegistration, CodeTransform, CodeTransformRegistration, PushTest } from "@atomist/sdm";
+import { alignStars, hasUnalignedAsterisks } from "./alignStars";
 
 const alignAsterisksInProject: CodeTransform = (project: Project) =>
-    doWithFiles(project, "**/*.ts", async f => {
+    projectUtils.doWithFiles(project, "**/*.ts", async f => {
         const content = await f.getContent();
         if (hasUnalignedAsterisks(content)) {
             await f.setContent(alignStars(content));
@@ -32,15 +30,15 @@ export const AlignStarsTransform: CodeTransformRegistration = {
     name: "AlignAsterisks",
     transform: alignAsterisksInProject,
     intent: "align the stars",
-}
+};
 
 const IsTypeScript: PushTest = {
     name: "IsTypeScript",
-    mapping: async (pci) => fileExists(pci.project, "**/*.ts", () => true),
-}
+    mapping: async pci => projectUtils.fileExists(pci.project, "**/*.ts", () => true),
+};
 
 export const AlignAsterisksInBlockComments: AutofixRegistration = {
     name: "Align asterisks in jsdoc",
     transform: alignAsterisksInProject,
     pushTest: IsTypeScript,
-}
+};

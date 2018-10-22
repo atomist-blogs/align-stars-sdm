@@ -15,10 +15,11 @@
  */
 
 import {
+    Autofix,
+    goalContributors,
+    onAnyPush,
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
-    onAnyPush,
-    AutofixGoal,
 } from "@atomist/sdm";
 import {
     createSoftwareDeliveryMachine,
@@ -34,12 +35,11 @@ export function machine(
         configuration,
     });
 
-
-    sdm.addAutofix(AlignAsterisksInBlockComments)
-    sdm.addCodeTransformCommand(AlignStarsTransform)
+    sdm.addCodeTransformCommand(AlignStarsTransform);
 
     /* Run the autofixes on every commit */
-    sdm.addGoalContributions(onAnyPush().setGoals(AutofixGoal));
+    const autofix = new Autofix().with(AlignAsterisksInBlockComments);
+    sdm.addGoalContributions(goalContributors(onAnyPush().setGoals(autofix)));
 
     return sdm;
 }

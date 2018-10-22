@@ -22,17 +22,17 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/automation-client": "^1.0.0-M.2",
-    "@atomist/cli": "^1.0.0-M.2",
-    "@atomist/sdm": "^1.0.0-M.1",
-    "@atomist/sdm-core": "^1.0.0-M.1",
+    "@atomist/automation-client": "1.0.0-RC.1",
+    "@atomist/cli": "1.0.0-RC.1",
+    "@atomist/sdm": "1.0.0-RC.1",
+    "@atomist/sdm-core": "1.0.0-RC.1",
     "@types/dateformat": "^1.0.1",
     "@types/lodash": "^4.14.108",
     "dateformat": "^3.0.3",
     "lodash": "^4.17.10"
   },
   "devDependencies": {
-    "@atomist/sdm-local": "^1.0.0-M.1",
+    "@atomist/sdm-local": "1.0.0-RC.1",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.5.7",
     "@types/power-assert": "^1.5.0",
@@ -66,8 +66,8 @@
     "compile:ts": "tsc --project .",
     "doc": "typedoc --mode modules --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "fmt": "tsfmt --replace",
-    "git:info": "atomist git",
-    "gql:gen": "atomist gql-gen --no-install \"lib/**/*.graphql\"",
+    "git:info": "atm-git-info",
+    "gql:gen": "atm-gql-gen",
     "lint": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" --exclude \"**/*.d.ts\" \"**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "start": "atomist start --no-install --no-compile",
@@ -76,7 +76,7 @@
     "typedoc": "npm run doc"
   },
   "engines": {
-    "node": ">=8.0.0",
+    "node": ">=8.1.0",
     "npm": ">=5.0.0"
   }
 }
